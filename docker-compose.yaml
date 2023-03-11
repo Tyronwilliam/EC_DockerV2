@@ -1,0 +1,49 @@
+version: "3.8"
+services:
+  nodejs:
+    build: ./back
+    environment:
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=mystrongpassword
+      - MYSQL_DATABASE=ecomv2
+      - MYSQL_HOST=db
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    volumes:
+      - ./back:/app
+    networks:
+      - app-network
+  db:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ecomv2
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: mystrongpassword
+    volumes:
+      - ./mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
