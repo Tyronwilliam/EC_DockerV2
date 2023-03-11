@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
     if (results.length > 0) {
       res.status(200).send(results);
     } else {
-      res.status(404).send("No data found");
+      res.status(404).send("No data found test");
     }
   });
 });
