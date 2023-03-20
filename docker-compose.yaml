@@ -1,5 +1,18 @@
 version: "3.8"
 services:
+  web:
+    build: ./ecomv2
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./ecomv2:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    restart: always
+
+    networks:
+      - app-network
   nodejs:
     build: ./back
     environment:

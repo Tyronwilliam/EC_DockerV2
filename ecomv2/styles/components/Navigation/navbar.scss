@@ -1,0 +1,152 @@
+.header_container {
+  width: 100%;
+  height: 60px;
+  position: relative;
+  .container_logo_hamburger {
+    display: flex;
+    width: 100%;
+    height: 50px;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.6);
+    padding: 0 5px;
+    align-items: center;
+    justify-content: space-between;
+    div {
+      flex-shrink: 0;
+      flex-basis: 30%;
+    }
+  }
+  .logo {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30%;
+    cursor: pointer;
+  }
+  .container_emoji {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-grow: 0;
+    flex-basis: 30%;
+
+    .hamburger {
+      width: 30px;
+      height: 30px;
+      color: black;
+      flex-shrink: 0;
+    }
+  }
+
+  .default_nav {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    z-index: 80;
+  }
+  .open {
+    transform: translateX(0px);
+    transition: transform 250ms ease-in-out;
+  }
+  .close {
+    transform: translateX(-768px);
+    transition: transform 250ms ease-in-out;
+  }
+  ul {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    text-align: center;
+    li {
+      list-style-type: none;
+      width: 100%;
+      height: fit-content;
+      border-bottom: 1px solid grey;
+      padding: 8px;
+      cursor: pointer;
+    }
+  }
+  ul:first-of-type {
+    padding-top: 35px;
+  }
+  ul:last-child {
+    border-top: 0px solid black;
+  }
+  .shopping_item {
+    position: absolute;
+    border: 0;
+    top: 2%;
+    left: 40%;
+    div {
+      position: relative;
+      span {
+        position: absolute;
+      }
+    }
+    .shopping_emoji {
+      width: 25px;
+      height: 25px;
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .header_container {
+    .container_logo_hamburger {
+      box-shadow: unset;
+      padding-left: 50px;
+    }
+    .logo {
+      width: 40px;
+      height: 40px;
+      flex-basis: unset;
+    }
+    .container_emoji {
+      display: none;
+    }
+    .default_nav {
+      height: 64px;
+      flex-direction: initial;
+      box-shadow: 0px 9px 10px rgba(0, 0, 0, 0.1);
+    }
+    .close {
+      transform: translateX(0);
+    }
+    ul {
+      flex-direction: initial;
+      align-items: center;
+      flex: 1;
+      text-align: center;
+      li {
+        border-bottom: none;
+      }
+    }
+    ul:first-of-type {
+      margin-left: 45px;
+      padding: 0;
+    }
+    ul:last-child {
+      justify-content: flex-end;
+      gap: 10px;
+      padding-right: 20px;
+      li {
+        flex-grow: 0;
+        width: fit-content;
+      }
+    }
+    .shopping_item {
+      position: initial;
+      div {
+        position: relative;
+        flex-shrink: 1;
+        span {
+          position: absolute;
+        }
+      }
+    }
+  }
+}
