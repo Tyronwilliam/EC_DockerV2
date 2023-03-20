@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Preview from "./components/Preview/Preview";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* Import Component HOME */}
+      <Preview />
     </>
   );
 }
