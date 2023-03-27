@@ -1,0 +1,22 @@
+@mixin button {
+  font-size: 1rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 10px;
+  background-color: $beige;
+  color: white;
+  cursor: pointer;
+  border: none;
+  border-radius: 3px;
+  max-width: 300px;
+  margin: 0 auto;
+  &:hover {
+    background-color: white;
+    color: $beige;
+    border: 1px solid $beige;
+  }
+}
+@mixin flexRowNoGap {
+  display: flex;
+  flex-direction: row;
+}

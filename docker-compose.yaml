@@ -10,9 +10,13 @@ services:
       - /app/.next
     command: npm run dev
     restart: always
-
     networks:
       - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.35"
+          memory: 800m
   nodejs:
     build: ./back
     environment:
@@ -28,6 +32,11 @@ services:
       - ./back:/app
     networks:
       - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.13"
+          memory: 512m
   db:
     image: mysql:latest
     command: --default-authentication-plugin=mysql_native_password
@@ -43,6 +52,10 @@ services:
       - "3306:3306"
     networks:
       - app-network
+    deploy:
+      resources:
+        limits:
+          memory: 512m
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     restart: always
@@ -53,10 +66,10 @@ services:
       - "8080:80"
     networks:
       - app-network
+    mem_limit: 512m
 networks:
   app-network:
     driver: bridge
-
 volumes:
   mysql-data:
     driver: local

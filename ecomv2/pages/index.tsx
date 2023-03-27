@@ -1,7 +1,39 @@
+import { CarouselBrand } from "@/features/Carousel";
+import {
+  FindUs,
+  Intro,
+  Newsletter,
+  Page,
+  Preview,
+  Reinsurance,
+} from "@/features/Home";
 import Head from "next/head";
-import Preview from "./components/Preview/Preview";
+import { SiNike } from "react-icons/si";
+import { SiAdidas } from "react-icons/si";
+import { SiTesla } from "react-icons/si";
+import { SiBrandfolder } from "react-icons/si";
+import { SiVectorlogozone } from "react-icons/si";
+import { SiNetflix } from "react-icons/si";
+import { SiHulu } from "react-icons/si";
 
 export default function Home() {
+  const content = [
+    <SiAdidas className="emoji_carousel" />,
+    <SiNike className="emoji_carousel" />,
+    <SiTesla className="emoji_carousel" />,
+    <SiBrandfolder className="emoji_carousel" />,
+    <SiHulu className="emoji_carousel" />,
+    <SiVectorlogozone className="emoji_carousel" />,
+    <SiNetflix className="emoji_carousel" />,
+  ];
+  const card = [
+    <div className="card_new">1</div>,
+    <div className="card_new">2</div>,
+    <div className="card_new">3</div>,
+    <div className="card_new">4</div>,
+    <div className="card_new">5</div>,
+    <div className="card_new">6</div>,
+  ];
   return (
     <>
       <Head>
@@ -10,8 +42,15 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {/* Import Component HOME */}
-      <Preview />
+      <Page>
+        <Preview />
+        <Intro />
+        <CarouselBrand content={card} title="Les nouveautés" />
+        <FindUs />
+        <Reinsurance />
+        <CarouselBrand content={content} title="Il nous font confiance" />
+        <Newsletter />
+      </Page>
     </>
   );
 }

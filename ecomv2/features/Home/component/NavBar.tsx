@@ -7,7 +7,7 @@ import { AiOutlineShopping } from "react-icons/ai";
 type Props = {
   itemNumber: number;
 };
-const NavBar = ({ itemNumber }: Props) => {
+export default function NavBar({ itemNumber }: Props) {
   const [open, setOpen] = useState(false);
   return (
     <header className="header_container">
@@ -63,6 +63,4 @@ const NavBar = ({ itemNumber }: Props) => {
       </nav>
     </header>
   );
-};
-
-export default NavBar;
+}

@@ -1,0 +1,27 @@
+.container_intro {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 30px;
+  padding: 0 5px;
+  margin-bottom: 50px;
+  h2 {
+    text-transform: uppercase;
+  }
+  p {
+    max-width: 650px;
+  }
+  button {
+    @include button;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .container_intro {
+    button {
+      font-size: $fontSizeL;
+    }
+  }
+}

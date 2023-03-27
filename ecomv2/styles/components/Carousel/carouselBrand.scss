@@ -1,0 +1,40 @@
+.swiper-horizontal {
+  width: 80%;
+  height: 300px;
+  margin: 0 auto;
+}
+.swiper-slide,
+swiper-slide {
+  width: 100%;
+  height: 100%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.container_carousel_brand {
+  padding-bottom: 50px;
+  h2 {
+    text-align: center;
+    font-size: 1.7rem;
+    text-transform: uppercase;
+  }
+  .emoji_carousel {
+    width: 100px;
+    height: 100px;
+    fill: $beige;
+  }
+  .card_new {
+    width: 200px;
+    height: 250px;
+    border: 1px solid blue;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .container_carousel_brand {
+    h2 {
+      font-size: 2rem;
+    }
+  }
+}

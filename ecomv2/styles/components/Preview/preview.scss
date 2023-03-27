@@ -1,6 +1,8 @@
 .container_photo_maker {
+  position: relative;
   display: flex;
   flex-direction: column;
+  margin-bottom: 30px;
   .single_container_photo {
     position: relative;
     max-width: 100%;
@@ -11,7 +13,17 @@
     }
   }
 }
-
+.container_preview_title {
+  position: absolute;
+  width: 90%;
+  z-index: 70;
+  top: 7%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  letter-spacing: 12px;
+  text-align: center;
+}
 @media screen and (min-width: 768px) {
   .container_photo_maker {
     width: 100%;
@@ -44,5 +56,10 @@
     .single_container_photo:hover {
       transform: rotateY(180deg);
     }
+  }
+  .container_preview_title {
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-transform: uppercase;
   }
 }
