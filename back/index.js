@@ -21,8 +21,11 @@ app.get("/", (req, res, next) => {
 });
 
 const userRoute = require("./routes/userRoutes");
+const avisRoute = require("./routes/avisRoutes");
 //Use route
 app.use("/api", userRoute);
+app.use("/api", avisRoute);
+
 // Start the server
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

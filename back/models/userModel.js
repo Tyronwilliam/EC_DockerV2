@@ -52,4 +52,88 @@ async function findUserById(id) {
     throw error;
   }
 }
-module.exports = { createUser, findUser, confirmUser, findUserById };
+
+async function updateUserById(
+  id,
+  name,
+  lastname,
+  address,
+  phone,
+  zip,
+  city,
+  country,
+  cgv,
+  img
+) {
+  const sql =
+    "UPDATE user SET name=? , lastname=? , address=? , phone=? , zip=? , city=? , country=? , cgv=?   ,img=? WHERE id = ?";
+  const values = [
+    name,
+    lastname,
+    address,
+    phone,
+    zip,
+    city,
+    country,
+    cgv,
+    img,
+    id,
+  ];
+  try {
+    const result = await query(sql, values);
+    return result;
+  } catch (error) {
+    console.error("Error get user:", error);
+    throw error;
+  }
+}
+
+async function generateToken(email, reset_password_token) {
+  const sql = "UPDATE user SET reset_password_token=? WHERE email =?";
+  const values = [reset_password_token, email];
+
+  try {
+    const result = await query(sql, values);
+    return result;
+  } catch (error) {
+    console.error("Error get user:", error);
+    throw error;
+  }
+}
+async function checkToken(reset_password_token) {
+  const sql = "SELECT * FROM user WHERE reset_password_token = ?";
+  const values = [reset_password_token];
+
+  try {
+    const result = await query(sql, values);
+    return result;
+  } catch (error) {
+    console.error("Error update user:", error);
+    throw error;
+  }
+}
+async function updatePassword(reset_password_token, password) {
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(password, salt);
+  const sql =
+    "UPDATE user SET password = ?, reset_password_token=NULL WHERE reset_password_token = ?";
+  const values = [reset_password_token, hash];
+
+  try {
+    const result = await query(sql, values);
+    return result;
+  } catch (error) {
+    console.error("Error get user:", error);
+    throw error;
+  }
+}
+module.exports = {
+  createUser,
+  findUser,
+  confirmUser,
+  findUserById,
+  updateUserById,
+  generateToken,
+  checkToken,
+  updatePassword,
+};

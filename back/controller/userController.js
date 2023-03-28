@@ -1,4 +1,12 @@
-const { createUser, findUser, confirmUser } = require("../models/userModel");
+const {
+  createUser,
+  findUser,
+  confirmUser,
+  updateUserById,
+  generateToken,
+  checkToken,
+  updatePassword,
+} = require("../models/userModel");
 const { sendEmail } = require("../mailling/sendinblue");
 const bcrypt = require("bcryptjs");
 const code = require("../HttpResponse/httpResponse");
@@ -23,7 +31,8 @@ const registerUser = async (req, res) => {
         userId: result.insertId,
         data: result,
       });
-      await sendEmail(email, "John");
+      // A changer
+      await sendEmail(email, "John", 1);
     }
   } catch (error) {
     console.log(error);
@@ -34,7 +43,7 @@ const registerUser = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = await req.body;
 
   try {
     const result = await findUser(email);
@@ -77,21 +86,86 @@ const confirmAccount = async (req, res) => {
   }
 };
 
-const testRequireAuth = async (req, res) => {
-  const { email } = await req.body;
+const updateUser = async (req, res) => {
+  const { id } = await req.params;
+  const { name, lastname, address, phone, zip, city, country, cgv, img } =
+    await req.body;
   try {
-    console.log(email);
-    const id = await findUser(email);
-    console.log();
-    res.status(500).json({ message: "PROTECTED", id: id[0].id });
+    const result = await updateUserById(
+      id,
+      name,
+      lastname,
+      address,
+      phone,
+      zip,
+      city,
+      country,
+      cgv,
+      img
+    );
+    res.status(201).json({
+      message: code.HTTPCode.user.SUCCESS.update.SUCCESS,
+      user: result,
+    });
   } catch (error) {
-    console.error(code.HTTPCode.user.ERROR.register[2], error);
-    res.status(500).json({ message: code.HTTPCode.user.ERROR.register[2] });
+    console.log(error);
+    res.status(500).json({ message: code.HTTPCode.user.SUCCESS.update.ERROR });
   }
 };
+
+const resetPassword = async (req, res) => {
+  const { email } = await req.body;
+  try {
+    const response = await findUser(email);
+
+    if (response.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Cet e-mail ne correspond à aucun utilisateur." });
+    }
+    const token =
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15);
+
+    const result = await generateToken(email, token);
+    console.log(result);
+
+    const resetLink = `http://localhost:3000/reset-password/${token}`;
+
+    await sendEmail(email, "John", 2, resetLink);
+    res.status(201).json({ message: "Un email vous a été envoyé" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Email not sent", msg: error });
+  }
+};
+
+const confirmResetPassword = async (req, res) => {
+  const { token } = await req.params;
+  const { password } = await req.body;
+
+  try {
+    const result = await checkToken(token);
+
+    if (result.length === 0) {
+      return res.status(400).json({
+        msg: "Le jeton de réinitialisation de mot de passe est invalide ou a expiré.",
+      });
+    }
+    const response = await updatePassword(token, password);
+    console.log(response);
+
+    res.status(500).json({ message: "Password updated" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur password updated" });
+  }
+};
+
 module.exports = {
   registerUser,
   login,
   confirmAccount,
-  testRequireAuth,
+  updateUser,
+  resetPassword,
+  confirmResetPassword,
 };
