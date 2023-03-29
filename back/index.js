@@ -22,9 +22,12 @@ app.get("/", (req, res, next) => {
 
 const userRoute = require("./routes/userRoutes");
 const avisRoute = require("./routes/avisRoutes");
+const productRoute = require("./routes/productRoutes");
+
 //Use route
 app.use("/api", userRoute);
 app.use("/api", avisRoute);
+app.use("/api", productRoute);
 
 // Start the server
 const port = process.env.PORT || 5000;
