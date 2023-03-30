@@ -3,6 +3,9 @@ const {
   getProductByCat,
   getProductById,
   getProductByRank,
+  addProduct,
+  deleteProduct,
+  updateProduct,
 } = require("../models/productModel");
 
 const getAllProduct = async (req, res) => {
@@ -63,9 +66,65 @@ const findAllProductByRank = async (req, res) => {
     res.status(500).json({ error: error });
   }
 };
+
+const addAProduct = async (req, res) => {
+  const { name, category_id, price, img, description, quantity } =
+    await req.body;
+  try {
+    const result = await addProduct(
+      name,
+      category_id,
+      price,
+      img,
+      description,
+      quantity
+    );
+    return res.status(201).json({ message: "Product Add", data: result });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error });
+  }
+};
+const UpdateAProduct = async (req, res) => {
+  const { id } = await req.params;
+  const { name, category_id, price, img, description, quantity } =
+    await req.body;
+  try {
+    const result = await updateProduct(
+      name,
+      category_id,
+      price,
+      img,
+      description,
+      quantity,
+      id
+    );
+    return res.status(201).json({ message: "Product Update", data: result });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error });
+  }
+};
+const deleteSingleProduct = async (req, res) => {
+  const { id } = await req.params;
+  try {
+    const result = await deleteProduct(id);
+
+    return res
+      .status(201)
+      .json({ message: "Single Product delete", data: result });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error });
+  }
+};
+
 module.exports = {
   getAllProduct,
   findProductByCategory,
   findProductById,
   findAllProductByRank,
+  addAProduct,
+  deleteSingleProduct,
+  UpdateAProduct,
 };
