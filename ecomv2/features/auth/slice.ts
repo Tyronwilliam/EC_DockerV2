@@ -3,15 +3,17 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { LoggedUserType, TokenType } from "./models";
 
 interface AuthState {
-  error: string;
+  error: string | null;
   user: LoggedUserType | null;
-  token: TokenType | null;
+  token: string;
+  loading: boolean;
 }
 
 const initialState: AuthState = {
-  error: "",
+  error: null,
   user: null,
-  token: null,
+  token: "",
+  loading: false,
 };
 
 export const authSlice = createSlice({
@@ -21,8 +23,11 @@ export const authSlice = createSlice({
     setUser: (state, action: PayloadAction<LoggedUserType>) => {
       state.user = action.payload;
     },
-    setToken: (state, action: PayloadAction<TokenType>) => {
-      localStorage.setItem("accessToken", action.payload.access);
+    setToken: (state, action: PayloadAction<string>) => {
+      localStorage.setItem("accessToken", action.payload);
+      state.token = action.payload;
+      console.log(action.payload, "TOKEN TYPE");
+      console.log(action.payload, "TOKEN TYPE only action");
     },
     logout: (state) => {
       localStorage.removeItem("accessToken");

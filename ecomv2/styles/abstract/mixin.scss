@@ -2,7 +2,7 @@
   font-size: 1rem;
   text-transform: uppercase;
   font-weight: 600;
-  padding: 10px;
+  padding: 8px;
   background-color: $beige;
   color: white;
   cursor: pointer;
@@ -10,6 +10,8 @@
   border-radius: 3px;
   max-width: 300px;
   margin: 0 auto;
+  border: 1px solid $beige;
+
   &:hover {
     background-color: white;
     color: $beige;
@@ -19,4 +21,15 @@
 @mixin flexRowNoGap {
   display: flex;
   flex-direction: row;
+}
+@mixin flexCenterXY {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@mixin flexColumn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }

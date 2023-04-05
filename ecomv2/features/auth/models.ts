@@ -1,8 +1,8 @@
 export interface LoggedUserType {
   id: string | null;
-  name: string | null;
   email: string | null;
 }
+
 export interface RegisterType {
   email: string;
   password: string;
@@ -15,4 +15,8 @@ export interface LoginType {
 }
 export interface TokenType {
   access: string;
+}
+export interface MutationLoginType {
+  user: LoggedUserType;
+  token: string;
 }
