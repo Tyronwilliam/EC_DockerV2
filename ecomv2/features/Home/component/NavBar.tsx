@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { CiMenuBurger } from "react-icons/ci";
 import { AiOutlineClose } from "react-icons/ai";
 import { FcCdLogo } from "react-icons/fc";
 import { AiOutlineShopping } from "react-icons/ai";
 import { useRouter } from "next/router";
-
 import { useDispatch } from "react-redux";
 import { open } from "@/features/common/slice";
+import { useSelector } from "react-redux";
+import { logout, selectIsLogged } from "@/features/auth/slice";
+import Link from "next/link";
 type Props = {
   itemNumber: number;
 };
@@ -14,11 +16,14 @@ export default function NavBar({ itemNumber }: Props) {
   const [openNav, setOpenNav] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+  const isLogged = useSelector(selectIsLogged);
 
   const handleOpen = () => {
     dispatch(open());
   };
-
+  const handleLogout = () => {
+    dispatch(logout());
+  };
   return (
     <header className="header_container">
       {/* Handle Close /Open */}
@@ -44,7 +49,7 @@ export default function NavBar({ itemNumber }: Props) {
         <FcCdLogo
           className="logo"
           onClick={() => {
-            setOpenNav(!open);
+            router.push("/");
           }}
         />
         <div></div>
@@ -68,7 +73,15 @@ export default function NavBar({ itemNumber }: Props) {
 
         {/* User and panier */}
         <ul>
-          <li onClick={handleOpen}>Se connecter</li>
+          {isLogged ? (
+            <li>
+              <Link href="/" onClick={handleLogout}>
+                Mon compte
+              </Link>
+            </li>
+          ) : (
+            <li onClick={handleOpen}>Se connecter</li>
+          )}
 
           {/* Panier icone + chiffre */}
           <li className="shopping_item">

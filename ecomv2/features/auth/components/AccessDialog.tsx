@@ -11,9 +11,6 @@ type Props = {
 export default function AccessDialog({ func }: Props) {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const toggleLogin = () => {
-    setIsLogin(!isLogin);
-  };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login] = useLoginMutation();
@@ -30,7 +27,9 @@ export default function AccessDialog({ func }: Props) {
   const togglePassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
-
+  const toggleLogin = () => {
+    setIsLogin(!isLogin);
+  };
   return (
     <Dialog>
       <div className="form">

@@ -1,18 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {  createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { LoggedUserType, TokenType } from "./models";
-
+import { LoggedUserType } from "./models";
+import { RootState } from "@/app/store";
 interface AuthState {
   error: string | null;
   user: LoggedUserType | null;
-  token: string;
+  token: string | null;
   loading: boolean;
 }
 
 const initialState: AuthState = {
   error: null,
   user: null,
-  token: "",
+  token: null,
   loading: false,
 };
 
@@ -26,10 +26,10 @@ export const authSlice = createSlice({
     setToken: (state, action: PayloadAction<string>) => {
       localStorage.setItem("accessToken", action.payload);
       state.token = action.payload;
-      console.log(action.payload, "TOKEN TYPE");
-      console.log(action.payload, "TOKEN TYPE only action");
     },
     logout: (state) => {
+      state.user = null;
+      state.token = null;
       localStorage.removeItem("accessToken");
       window.location.href = "/";
     },
@@ -38,5 +38,6 @@ export const authSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const { setUser, setToken, logout } = authSlice.actions;
+export const selectIsLogged = (state: RootState) => Boolean(state.auth.token);
 
 export default authSlice.reducer;
