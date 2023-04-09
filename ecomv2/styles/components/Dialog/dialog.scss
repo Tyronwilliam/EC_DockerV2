@@ -96,3 +96,47 @@
     }
   }
 }
+// SnackBar
+.hide {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  width: 300px;
+  height: 70px;
+  padding: 10px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  transition: all 0.8s ease-out, right 0.5s ease-out, opacity 0.8s ease-out;
+  visibility: hidden;
+  z-index: 100;
+  right: -10%;
+  top: 10%;
+  opacity: 0;
+}
+
+.show {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  width: 300px;
+  height: 70px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  transition: all 0.8s ease-out, right 0.5s ease-out, opacity 0.8s ease-out;
+  visibility: visible;
+  z-index: 100;
+  right: 10%;
+  top: 10%;
+  opacity: 1;
+}
+
+.error {
+  background-color: #ef5350;
+}
+
+.success {
+  background-color: #4caf50;
+}

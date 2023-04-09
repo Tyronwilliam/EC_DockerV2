@@ -1,21 +1,19 @@
 import { persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
 import authReducer from "@/features/auth/slice";
-import loginModalReducer from "../features/common/slice";
+import utilityReducer from "../features/common/slice";
 import { combineReducers } from "@reduxjs/toolkit";
-
-import { api } from "../app/services/api";
-
+import { storage } from "./storage";
+import { api } from "./services/api";
 const persistConfig = {
   key: "root",
   storage,
   whitelist: ["auth"],
-  blacklist: [api.reducerPath, "loginModal"],
+  blacklist: [api.reducerPath, "utilityModal"],
 };
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  loginModal: loginModalReducer,
+  utilityModal: utilityReducer,
   [api.reducerPath]: api.reducer,
 });
 

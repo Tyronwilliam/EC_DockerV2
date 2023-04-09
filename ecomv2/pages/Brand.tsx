@@ -1,7 +1,12 @@
+import { Page } from "@/features/Home";
 import React from "react";
 
 function Brand() {
-  return <div>Brand</div>;
+  return (
+    <Page>
+      <div>Brand</div>
+    </Page>
+  );
 }
 
 export default Brand;

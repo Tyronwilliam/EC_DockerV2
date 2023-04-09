@@ -8,7 +8,3 @@ export interface LocationType {
   pathname: string;
   state: LocationStateType;
 }
-
-export interface ShowType {
-  show: Boolean;
-}

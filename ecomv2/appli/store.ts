@@ -1,13 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { api } from "../app/services/api";
 import persistedReducer from "./entities";
-import {
-  persistStore,
-  REGISTER,
-  REHYDRATE,
-  PERSIST,
-} from "redux-persist";
-import thunk from "redux-thunk";
+import { persistStore, REGISTER, REHYDRATE, PERSIST } from "redux-persist";
+import { api } from "./services/api";
 
 const store = configureStore({
   reducer: persistedReducer,

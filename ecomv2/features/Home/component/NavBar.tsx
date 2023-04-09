@@ -8,11 +8,12 @@ import { useDispatch } from "react-redux";
 import { open } from "@/features/common/slice";
 import { useSelector } from "react-redux";
 import { logout, selectIsLogged } from "@/features/auth/slice";
-import Link from "next/link";
+import useUtilityModal from "@/features/common/hooks/useUtilityModal";
 type Props = {
   itemNumber: number;
 };
 export default function NavBar({ itemNumber }: Props) {
+  const { displayNotification } = useUtilityModal();
   const [openNav, setOpenNav] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -21,8 +22,9 @@ export default function NavBar({ itemNumber }: Props) {
   const handleOpen = () => {
     dispatch(open());
   };
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    router.push("/auth/profil");
   };
   return (
     <header className="header_container">
@@ -58,7 +60,17 @@ export default function NavBar({ itemNumber }: Props) {
       <nav className={`default_nav ${openNav ? "open" : "close"}`}>
         <ul>
           {/* Main content */}
-          <li>Boutique</li>
+          <li
+            onClick={() => {
+              displayNotification({
+                message: "C'est ouvert ",
+                type: "success",
+              });
+              console.log("click");
+            }}
+          >
+            Boutique
+          </li>
           <li>LookBook</li>
           <li
             onClick={(e) => {
@@ -74,11 +86,7 @@ export default function NavBar({ itemNumber }: Props) {
         {/* User and panier */}
         <ul>
           {isLogged ? (
-            <li>
-              <Link href="/" onClick={handleLogout}>
-                Mon compte
-              </Link>
-            </li>
+            <li onClick={(e) => handleLogout(e)}>Mon compte</li>
           ) : (
             <li onClick={handleOpen}>Se connecter</li>
           )}

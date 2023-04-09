@@ -15,17 +15,10 @@ import { SiBrandfolder } from "react-icons/si";
 import { SiVectorlogozone } from "react-icons/si";
 import { SiNetflix } from "react-icons/si";
 import { SiHulu } from "react-icons/si";
-import { useSelector } from "react-redux";
-import { close, selectShow } from "@/features/common/slice";
-import { AccessDialog } from "@/features/auth";
-import { useDispatch } from "react-redux";
-export default function Home() {
-  const show = useSelector(selectShow);
-  const dispatch = useDispatch();
 
-  const handleClose = () => {
-    dispatch(close());
-  };
+
+export default function Home() {
+
   const content = [
     <SiAdidas className="emoji_carousel" />,
     <SiNike className="emoji_carousel" />,
@@ -62,7 +55,6 @@ export default function Home() {
           <Newsletter />
         </>
       </Page>
-      {show && <AccessDialog func={handleClose} />}
     </>
   );
 }

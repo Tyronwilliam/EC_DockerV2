@@ -1,11 +1,10 @@
 require("dotenv").config();
 const SibApiV3Sdk = require("sib-api-v3-sdk");
 
-const sendEmail = async (toEmail, name, templateId, link) => {
+const sendEmail = async (toEmail, name, templateId, link, id) => {
   const defaultClient = SibApiV3Sdk.ApiClient.instance;
   const apiKey = defaultClient.authentications["api-key"];
-  apiKey.apiKey =
-    "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";
+  apiKey.apiKey = process.env.SENDINBLUE_APIKEY;
 
   const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
@@ -14,7 +13,7 @@ const sendEmail = async (toEmail, name, templateId, link) => {
     templateId: templateId,
     params: {
       name: name,
-      email: toEmail,
+      id: id,
       link: link,
     },
   };

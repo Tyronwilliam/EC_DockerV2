@@ -1,11 +1,12 @@
 const { query } = require("../utils");
 const bcrypt = require("bcryptjs");
 
-async function createUser(email, password) {
+async function createUser(email, password, name, lastname) {
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
-  const sql = "INSERT INTO user ( email, password, date) VALUE(?, ?, NOW())";
-  const values = [email, hash];
+  const sql =
+    "INSERT INTO user ( email, password , name, lastname, date) VALUE(?, ?, ? , ?,NOW())";
+  const values = [email, hash, name, lastname];
 
   try {
     const result = await query(sql, values);
@@ -28,9 +29,9 @@ async function findUser(email) {
   }
 }
 
-async function confirmUser(email) {
-  const sql = "UPDATE user SET confirmed = '1' WHERE email = ?";
-  const values = [email];
+async function confirmUser(id) {
+  const sql = "UPDATE user SET confirmed = '1' WHERE id = ?";
+  const values = [id];
 
   try {
     const result = await query(sql, values);
@@ -41,7 +42,7 @@ async function confirmUser(email) {
 }
 
 async function findUserById(id) {
-  const sql = "SELECT id FROM user WHERE id = ?";
+  const sql = "SELECT * FROM user WHERE id = ?";
   const values = [id];
 
   try {

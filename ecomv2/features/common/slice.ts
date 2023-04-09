@@ -1,13 +1,23 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { ShowType } from "./model";
-import { RootState } from "@/app/store";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "@/appli/store";
 
-const initialState: ShowType = {
+export interface Utility {
+  show?: boolean;
+  message?: string;
+  timeout?: number;
+  type: string;
+  open?: boolean;
+}
+const initialState: Utility = {
   show: false,
+  message: "",
+  timeout: 3000,
+  type: "",
+  open: false,
 };
 
-const loginModalSlice = createSlice({
-  name: "loginModal",
+const utilitySlice = createSlice({
+  name: "utilityModal",
   initialState,
   reducers: {
     open: (state) => {
@@ -16,10 +26,19 @@ const loginModalSlice = createSlice({
     close: (state) => {
       state.show = false;
     },
+    addNotification: (state, action: PayloadAction<Utility>) => ({
+      ...initialState,
+      ...action.payload,
+      open: true,
+      show: state.show,
+    }),
+    clearNotification: (state) => ({ ...state, open: false, show: state.show }),
   },
 });
 
-export const { open, close } = loginModalSlice.actions;
+export const { open, close, addNotification, clearNotification } =
+  utilitySlice.actions;
 
-export const selectShow = (state: RootState) => state.loginModal.show;
-export default loginModalSlice.reducer;
+export const selectShow = (state: RootState) => state.utilityModal.show;
+export const selectNotification = (state: RootState) => state.utilityModal;
+export default utilitySlice.reducer;

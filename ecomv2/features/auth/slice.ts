@@ -1,7 +1,8 @@
-import {  createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { LoggedUserType } from "./models";
-import { RootState } from "@/app/store";
+import { RootState } from "@/appli/store";
+import { setCookie } from "nookies";
 interface AuthState {
   error: string | null;
   user: LoggedUserType | null;
@@ -24,20 +25,31 @@ export const authSlice = createSlice({
       state.user = action.payload;
     },
     setToken: (state, action: PayloadAction<string>) => {
-      localStorage.setItem("accessToken", action.payload);
+      setCookie(null, "accessTokenEcon", action.payload, { path: "/", expires });
       state.token = action.payload;
     },
     logout: (state) => {
       state.user = null;
       state.token = null;
       localStorage.removeItem("accessToken");
-      window.location.href = "/";
+    },
+    setError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload || null;
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setUser, setToken, logout } = authSlice.actions;
+export const { setUser, setToken, logout, setError, setLoading } =
+  authSlice.actions;
 export const selectIsLogged = (state: RootState) => Boolean(state.auth.token);
+export const selectUser = (state: RootState) => state.auth.user;
+export const selectError = (state: RootState) => state.auth.error;
 
 export default authSlice.reducer;
+
+const threeDaysInSeconds = 3 * 24 * 60 * 60; // 3 days in seconds
+const expires = new Date(Date.now() + threeDaysInSeconds * 1000);
