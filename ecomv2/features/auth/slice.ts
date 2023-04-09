@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { LoggedUserType } from "./models";
 import { RootState } from "@/appli/store";
-import { setCookie } from "nookies";
+import { destroyCookie, setCookie } from "nookies";
 interface AuthState {
   error: string | null;
   user: LoggedUserType | null;
@@ -25,13 +25,16 @@ export const authSlice = createSlice({
       state.user = action.payload;
     },
     setToken: (state, action: PayloadAction<string>) => {
-      setCookie(null, "accessTokenEcon", action.payload, { path: "/", expires });
+      setCookie(null, "accessTokenEcon", action.payload, {
+        path: "/",
+        expires,
+      });
       state.token = action.payload;
     },
     logout: (state) => {
       state.user = null;
       state.token = null;
-      localStorage.removeItem("accessToken");
+      destroyCookie(null, "accessTokenEcon");
     },
     setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload || null;

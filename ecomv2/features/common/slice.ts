@@ -5,15 +5,15 @@ export interface Utility {
   show?: boolean;
   message?: string;
   timeout?: number;
-  type: string;
   open?: boolean;
+  type?: string;
 }
 const initialState: Utility = {
   show: false,
   message: "",
   timeout: 3000,
-  type: "",
   open: false,
+  type: "",
 };
 
 const utilitySlice = createSlice({

@@ -1,7 +1,7 @@
 import { useLoginMutation, useRegisterMutation } from "@/appli/services/auth";
 import { emailPattern, passwordPattern } from "@/constants/patterns";
 import Dialog from "@/features/common/components/Dialog";
-import { close } from "@/features/common/slice";
+import { close, selectNotification } from "@/features/common/slice";
 import React, { useState } from "react";
 import { BiShowAlt } from "react-icons/bi";
 import { BiHide } from "react-icons/bi";
@@ -16,75 +16,74 @@ type Props = {
 export default function AccessDialog({ func }: Props) {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [lastname, setLastName] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
   const [login] = useLoginMutation();
   const [register] = useRegisterMutation();
   const { displayNotification } = useUtilityModal();
   const dispatch = useDispatch();
   const error = useSelector(selectError);
-  const editEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.currentTarget.value);
+  const [formData, setFormData] = useState({
+    nom: "",
+    lastname: "",
+    email: "",
+    password: "",
+  });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
-  const editPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.currentTarget.value);
-  };
-  const editName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.currentTarget.value);
-  };
-  const editLastName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLastName(e.currentTarget.value);
-  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!email || !email.match(emailPattern)) {
+    console.log(formData);
+    if (!formData.email || !formData.email.match(emailPattern)) {
       displayNotification({
         message: "Veuillez entrer un email valide",
         type: "error",
       });
     }
-    if (!password || !password.match(passwordPattern)) {
+    if (!formData.password || !formData.password.match(passwordPattern)) {
       displayNotification({
         message: "Veuillez entrer un mot de passe valide",
         type: "error",
       });
     }
-    isLogin
-      ? await login({ email, password })
-          .unwrap()
-          .then(() => {
-            dispatch(setError(""));
-            displayNotification({
-              message: "Vous êtes connecté",
-              type: "success",
+    if (!isLogin && formData.nom === "")
+      isLogin
+        ? await login({ email: formData.email, password: formData.password })
+            .unwrap()
+            .then(() => {
+              dispatch(setError(""));
+              displayNotification({
+                message: "Vous êtes connecté",
+                type: "success",
+              });
+              dispatch(close());
+            })
+            .catch((err) => {
+              if (err) {
+                dispatch(setError(err.data.message));
+              }
+            })
+        : await register({
+            email: formData.email,
+            password: formData.password,
+            name: formData.nom,
+            lastname: formData.lastname,
+          })
+            .unwrap()
+            .then((res) => {
+              displayNotification({
+                message: "Votre compte est crée",
+                type: "success",
+              });
+            })
+            .catch((err) => {
+              if (err) {
+                dispatch(setError(err.data.message));
+              }
             });
-            dispatch(close());
-          })
-          .catch((err) => {
-            if (err) {
-              dispatch(setError(err.data.message));
-            }
-          })
-      : await register({
-          email,
-          password,
-          name,
-          lastname,
-        })
-          .unwrap()
-          .then((res) => {
-            displayNotification({
-              message: "Votre compte et crée",
-              type: "success",
-            });
-          })
-          .catch((err) => {
-            if (err) {
-              dispatch(setError(err.data.message));
-            }
-          });
   };
   const togglePassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -103,7 +102,12 @@ export default function AccessDialog({ func }: Props) {
         <form onSubmit={(e) => handleSubmit(e)}>
           <div>
             <label htmlFor="email">Email:</label>
-            <input type="email" value={email} onChange={(e) => editEmail(e)} />
+            <input
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              name="email"
+            />
           </div>
           {isLogin ? null : (
             <>
@@ -111,13 +115,19 @@ export default function AccessDialog({ func }: Props) {
                 <label htmlFor="name">Nom:</label>
                 <input
                   type="text"
-                  value={lastname}
-                  onChange={(e) => editLastName(e)}
+                  value={formData.lastname}
+                  onChange={handleChange}
+                  name="lastname"
                 />
               </div>{" "}
               <div>
                 <label htmlFor="email">Prénom:</label>
-                <input type="text" value={name} onChange={(e) => editName(e)} />
+                <input
+                  type="text"
+                  value={formData.nom}
+                  onChange={(e) => handleChange(e)}
+                  name="nom"
+                />
               </div>
             </>
           )}{" "}
@@ -125,8 +135,9 @@ export default function AccessDialog({ func }: Props) {
             <label htmlFor="password">Mot de passe:</label>
             <input
               type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => editPassword(e)}
+              value={formData.password}
+              onChange={(e) => handleChange(e)}
+              name="password"
             />
             {showPassword ? (
               <BiShowAlt className="showPass" onClick={togglePassword} />
@@ -145,3 +156,13 @@ export default function AccessDialog({ func }: Props) {
     </Dialog>
   );
 }
+
+// Changement d'aaffichage si compte ou non OK
+// Affichage erreur si mot de passe ou email invalide Login et register
+// Erreur sur Register si Name et Lastname Empty
+// Affichage Erreur sous chaque input si Erreur
+// Ajouter CGU // Input checkBox
+// Lorsque qu'il se Register => Page (composant Props) creation OK et Infos email envoyé
+// Lorsque Login / Dispatch Redux de l'user et du Token ainsi que renvoie sur la page Home
+// Restriction de route sur la page profil
+// Quand il est confirmé le renvoyer surr le composant Page (props)

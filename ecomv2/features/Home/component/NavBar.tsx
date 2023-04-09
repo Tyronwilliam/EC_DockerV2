@@ -18,7 +18,6 @@ export default function NavBar({ itemNumber }: Props) {
   const router = useRouter();
   const dispatch = useDispatch();
   const isLogged = useSelector(selectIsLogged);
-
   const handleOpen = () => {
     dispatch(open());
   };
@@ -62,10 +61,6 @@ export default function NavBar({ itemNumber }: Props) {
           {/* Main content */}
           <li
             onClick={() => {
-              displayNotification({
-                message: "C'est ouvert ",
-                type: "success",
-              });
               console.log("click");
             }}
           >

@@ -20,6 +20,10 @@ const createToken = (_id) => {
 const registerUser = async (req, res) => {
   const { email, password, name, lastname } = await req.body;
   try {
+    if (!email || !password || !name || !lastname)
+      return res.status(409).json({
+        message: "Veuillez remplir les champs néccesaire",
+      });
     const response = await findUser(email);
     if (response.length > 0) {
       res.status(409).json({
