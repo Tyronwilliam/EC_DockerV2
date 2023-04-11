@@ -61,15 +61,15 @@ const login = async (req, res) => {
     if (isMatch) {
       const user = {
         id: result[0].id,
-        name: result[0].name,
-        lastname: result[0].lastname,
-        email: result[0].email,
-        img: result[0].img,
-        phone: result[0].phone,
-        address: result[0].address,
-        zip: result[0].zip,
-        city: result[0].city,
-        country: result[0].country,
+        // name: result[0].name,
+        // lastname: result[0].lastname,
+        // email: result[0].email,
+        // img: result[0].img,
+        // phone: result[0].phone,
+        // address: result[0].address,
+        // zip: result[0].zip,
+        // city: result[0].city,
+        // country: result[0].country,
       };
       const token = createToken(result[0].id);
       if (result[0].confirmed !== 1) {

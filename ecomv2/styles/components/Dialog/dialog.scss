@@ -95,6 +95,17 @@
       color: white;
     }
   }
+  .error_list {
+    @include flexColumn;
+    align-items: unset;
+    ul {
+      list-style-type: none;
+    }
+  }
+  span {
+    font-size: 0.8rem;
+    color: grey;
+  }
 }
 // SnackBar
 .hide {

@@ -13,7 +13,6 @@ import { MdOutlineAddAPhoto } from "react-icons/md";
 import { MdOutlineDiscount } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { selectUser } from "../slice";
-import { LoggedUserType } from "../models";
 function ProfilView() {
   const [showCommandPage, setShowCommandPage] = useState("command");
   const [url, setUrl] = useState(window.location.href);
@@ -28,7 +27,6 @@ function ProfilView() {
     ) {
       setShowCommandPage("command");
     } else setShowCommandPage("profil");
-    console.log(window.location.href);
   };
   const handleCommandClick = (e: React.SyntheticEvent, arg: string): void => {
     setShowCommandPage(arg);
@@ -75,7 +73,8 @@ function ProfilView() {
               <p>Bonjour,</p>
               <p>
                 {nameCapitalise}
-                {"  "} {user?.lastname}
+                {"  "}
+                {lastnameCapitalise}
               </p>
             </div>
           </div>
@@ -86,7 +85,7 @@ function ProfilView() {
                   <li onClick={(e) => handleCommandClick(e, "command")}>
                     {" "}
                     <div>
-                      <BsBox2 className="emoji " />
+                      <BsBox2 className="emoji" />
                       <p>Mes commandes</p>
                     </div>
                   </li>

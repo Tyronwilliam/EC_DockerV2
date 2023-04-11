@@ -1,5 +1,11 @@
 import { useLoginMutation, useRegisterMutation } from "@/appli/services/auth";
-import { emailPattern, passwordPattern } from "@/constants/patterns";
+import {
+  emailPattern,
+  passwordPattern,
+  validateEmail,
+  validatePassword,
+  validateRequiredField,
+} from "@/constants/patterns";
 import Dialog from "@/features/common/components/Dialog";
 import { close, selectNotification } from "@/features/common/slice";
 import React, { useState } from "react";
@@ -22,68 +28,81 @@ export default function AccessDialog({ func }: Props) {
   const dispatch = useDispatch();
   const error = useSelector(selectError);
   const [formData, setFormData] = useState({
-    nom: "",
+    firstname: "",
     lastname: "",
     email: "",
     password: "",
+    errors: {
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: [],
+    },
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let errorMessage = "";
+    let arrayMessagePassword: string[] = [];
+    if (e.target.name === "email") {
+      errorMessage = validateEmail(e.target.value);
+    } else if (e.target.name === "password") {
+      arrayMessagePassword = validatePassword(e.target.value);
+    } else if (e.target.name === "firstname") {
+      errorMessage = validateRequiredField(e.target.value);
+    } else if (e.target.name === "lastname") {
+      errorMessage = validateRequiredField(e.target.value);
+    }
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
+      errors: {
+        ...formData.errors,
+        [e.target.name]:
+          e.target.name === "password" ? arrayMessagePassword : errorMessage,
+      },
     });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log(formData);
-    if (!formData.email || !formData.email.match(emailPattern)) {
+    if (Object.keys(formData.errors).length > 0) {
       displayNotification({
-        message: "Veuillez entrer un email valide",
+        message: "Veuillez corriger les erreurs dans le formulaire",
         type: "error",
       });
     }
-    if (!formData.password || !formData.password.match(passwordPattern)) {
-      displayNotification({
-        message: "Veuillez entrer un mot de passe valide",
-        type: "error",
-      });
-    }
-    if (!isLogin && formData.nom === "")
-      isLogin
-        ? await login({ email: formData.email, password: formData.password })
-            .unwrap()
-            .then(() => {
-              dispatch(setError(""));
-              displayNotification({
-                message: "Vous êtes connecté",
-                type: "success",
-              });
-              dispatch(close());
-            })
-            .catch((err) => {
-              if (err) {
-                dispatch(setError(err.data.message));
-              }
-            })
-        : await register({
-            email: formData.email,
-            password: formData.password,
-            name: formData.nom,
-            lastname: formData.lastname,
-          })
-            .unwrap()
-            .then((res) => {
-              displayNotification({
-                message: "Votre compte est crée",
-                type: "success",
-              });
-            })
-            .catch((err) => {
-              if (err) {
-                dispatch(setError(err.data.message));
-              }
+    try {
+      if (isLogin) {
+        await login({
+          email: formData.email,
+          password: formData.password,
+        })
+          .unwrap()
+          .then(() => {
+            dispatch(setError(""));
+            displayNotification({
+              message: "Vous êtes connecté",
+              type: "success",
             });
+            dispatch(close());
+          });
+      } else {
+        await register({
+          email: formData.email,
+          password: formData.password,
+          name: formData.firstname,
+          lastname: formData.lastname,
+        })
+          .unwrap()
+          .then(() => {
+            dispatch(setError(""));
+            displayNotification({
+              message: "Votre compte est créé",
+              type: "success",
+            });
+            dispatch(close());
+          });
+      }
+    } catch (err) {}
   };
   const togglePassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -100,52 +119,80 @@ export default function AccessDialog({ func }: Props) {
           {isLogin ? "Je n'ai pas de compte" : "J'ai déja un compte"}
         </span>
         <form onSubmit={(e) => handleSubmit(e)}>
-          <div>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              name="email"
-            />
-          </div>
-          {isLogin ? null : (
-            <>
-              <div>
-                <label htmlFor="name">Nom:</label>
-                <input
-                  type="text"
-                  value={formData.lastname}
-                  onChange={handleChange}
-                  name="lastname"
-                />
-              </div>{" "}
-              <div>
-                <label htmlFor="email">Prénom:</label>
-                <input
-                  type="text"
-                  value={formData.nom}
-                  onChange={(e) => handleChange(e)}
-                  name="nom"
-                />
-              </div>
-            </>
-          )}{" "}
-          <div>
-            <label htmlFor="password">Mot de passe:</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              onChange={(e) => handleChange(e)}
-              name="password"
-            />
-            {showPassword ? (
-              <BiShowAlt className="showPass" onClick={togglePassword} />
-            ) : (
-              <BiHide className="showPass" onClick={togglePassword} />
+          <>
+            <div>
+              <label htmlFor="email">Email:</label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                name="email"
+                required
+              />
+            </div>{" "}
+            {!isLogin && formData.errors.email && (
+              <span>{formData.errors.email}</span>
             )}
-          </div>
-          <button>{isLogin ? "Connexion" : "Continuer"}</button>
+            {!isLogin && (
+              <>
+                <div>
+                  <label htmlFor="lastname">Nom:</label>
+                  <input
+                    type="text"
+                    value={formData.lastname}
+                    onChange={handleChange}
+                    name="lastname"
+                    required
+                  />
+                </div>{" "}
+                {!isLogin && formData.errors.lastname && (
+                  <span>{formData.errors.lastname}</span>
+                )}
+                <div>
+                  <label htmlFor="firstname">Prénom:</label>
+                  <input
+                    type="text"
+                    value={formData.firstname}
+                    onChange={(e) => handleChange(e)}
+                    name="firstname"
+                    required
+                  />
+                </div>{" "}
+                {!isLogin && formData.errors.firstname && (
+                  <span>{formData.errors.firstname}</span>
+                )}
+              </>
+            )}{" "}
+            <div>
+              <label htmlFor="password">Mot de passe:</label>
+              <input
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={(e) => handleChange(e)}
+                name="password"
+                required
+              />
+              {showPassword ? (
+                <BiShowAlt className="showPass" onClick={togglePassword} />
+              ) : (
+                <BiHide className="showPass" onClick={togglePassword} />
+              )}
+            </div>{" "}
+            {!isLogin && formData.errors.password && (
+              <div className="error_list">
+                <ul>
+                  {formData.errors.password.map((erroPass, index) => {
+                    return (
+                      <li key={index}>
+                        <span>{erroPass}</span>
+                      </li>
+                    );
+                  })}{" "}
+                </ul>
+              </div>
+            )}
+            <button>{isLogin ? "Connexion" : "Continuer"}</button>
+          </>
         </form>
 
         <button onClick={func} className="close">

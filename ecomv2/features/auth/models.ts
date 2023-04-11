@@ -34,8 +34,8 @@ export interface MutationRegisterType {
 export interface QueryUserType {
   user: {
     id: string | null;
-    name: string | null;
-    lastname: string | null;
+    name: string;
+    lastname: string;
     email: string;
     img: string | null;
     phone: number | null;
