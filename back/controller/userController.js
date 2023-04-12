@@ -105,7 +105,7 @@ const updateUser = async (req, res) => {
   const { name, lastname, address, phone, zip, city, country, cgv, img } =
     await req.body;
   try {
-    const result = await updateUserById(
+    await updateUserById(
       id,
       name,
       lastname,
@@ -117,9 +117,9 @@ const updateUser = async (req, res) => {
       cgv,
       img
     );
-    res.status(201).json({
+    res.json({
       message: code.HTTPCode.user.SUCCESS.update.SUCCESS,
-      user: result,
+      status: 201,
     });
   } catch (error) {
     console.log(error);
@@ -167,7 +167,6 @@ const confirmResetPassword = async (req, res) => {
       });
     }
     const response = await updatePassword(token, password);
-    console.log(response);
 
     res.status(201).json({ message: "Password updated" });
   } catch (error) {
