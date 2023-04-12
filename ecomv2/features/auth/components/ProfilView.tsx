@@ -1,6 +1,5 @@
 import Box from "@/features/common/components/Box";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useState, useEffect, useMemo } from "react";
 import CommandPage from "./CommandPage";
 import InfosPage from "./InfosPage";
@@ -11,33 +10,41 @@ import { GrDocumentUser } from "react-icons/gr";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import { MdOutlineAddAPhoto } from "react-icons/md";
 import { MdOutlineDiscount } from "react-icons/md";
-import { useSelector } from "react-redux";
-import { selectUser } from "../slice";
-function ProfilView() {
+import { VscAccount } from "react-icons/vsc";
+import { QueryUserType } from "../models";
+import MyAccount from "./MyAccount";
+import { capitalizeFirstLetter } from "@/constants/function";
+function ProfilView({ user }: { user?: QueryUserType["user"] }) {
   const [showCommandPage, setShowCommandPage] = useState("command");
-  const [url, setUrl] = useState(window.location.href);
-  const user = useSelector(selectUser);
 
   const handleUrlChange = () => {
-    setUrl(window.location.href);
-    if (window.location.href === "http://localhost:3000/auth/profil/infos") {
+    if (
+      window.location.href ===
+      `http://localhost:3000/auth/profil/infos?id=${user?.id}
+`
+    ) {
       setShowCommandPage("infos");
     } else if (
-      window.location.href === "http://localhost:3000/auth/profil/command"
+      window.location.href ===
+      `http://localhost:3000/auth/profil/command?id=${user?.id}`
     ) {
       setShowCommandPage("command");
+    } else if (
+      window.location.href ===
+      `http://localhost:3000/auth/profil/my-account?id=${user?.id}`
+    ) {
+      setShowCommandPage("my-account");
     } else setShowCommandPage("profil");
   };
   const handleCommandClick = (e: React.SyntheticEvent, arg: string): void => {
     setShowCommandPage(arg);
-    window.history.pushState(null, "", "/auth/profil/" + arg);
+    window.history.pushState(
+      null,
+      "",
+      "/auth/profil/" + arg + `?id=${user?.id}`
+    );
   };
-  const capitalizeFirstLetter = (string: string | undefined) => {
-    let nameCap;
-    return (nameCap = string
-      ? string.charAt(0).toUpperCase() + string?.slice(1)
-      : null);
-  };
+
   const nameCapitalise = useMemo(
     () => capitalizeFirstLetter(user?.name),
     [user]
@@ -82,6 +89,13 @@ function ProfilView() {
             <>
               <nav>
                 <ul>
+                  <li onClick={(e) => handleCommandClick(e, "my-account")}>
+                    {" "}
+                    <div>
+                      <VscAccount className="emoji" />
+                      <p>Aperçu du compte</p>
+                    </div>
+                  </li>
                   <li onClick={(e) => handleCommandClick(e, "command")}>
                     {" "}
                     <div>
@@ -115,6 +129,8 @@ function ProfilView() {
       </Box>
       <Box myStyle="box_profil main">
         <>
+          {showCommandPage === "my-account" && <MyAccount />}
+
           {showCommandPage === "command" && <CommandPage />}
           {showCommandPage === "infos" && <InfosPage />}
         </>

@@ -5,14 +5,14 @@ import { RootState } from "@/appli/store";
 import { destroyCookie, setCookie } from "nookies";
 interface AuthState {
   error: string | null;
-  user: LoggedUserType | null;
+  user: LoggedUserType | undefined;
   token: string | null;
   loading: boolean;
 }
 
 const initialState: AuthState = {
   error: null,
-  user: null,
+  user: undefined,
   token: null,
   loading: false,
 };
@@ -32,7 +32,7 @@ export const authSlice = createSlice({
       state.token = action.payload;
     },
     logout: (state) => {
-      state.user = null;
+      state.user = undefined;
       state.token = null;
       destroyCookie(null, "accessTokenEcon");
     },
@@ -51,6 +51,13 @@ export const { setUser, setToken, logout, setError, setLoading } =
 export const selectIsLogged = (state: RootState) => Boolean(state.auth.token);
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectError = (state: RootState) => state.auth.error;
+export const selectUserId = (state: RootState) => {
+  const id = state.auth.user?.id;
+  if (id === undefined) {
+    return 0; // or any other default value
+  }
+  return id;
+};
 
 export default authSlice.reducer;
 

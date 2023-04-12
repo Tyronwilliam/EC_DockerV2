@@ -32,7 +32,13 @@ const utilitySlice = createSlice({
       open: true,
       show: state.show,
     }),
-    clearNotification: (state) => ({ ...state, open: false, show: state.show }),
+    clearNotification: (state) => ({
+      message: "",
+      timeout: 3000,
+      type: "",
+      open: false,
+      show: state.show,
+    }),
   },
 });
 

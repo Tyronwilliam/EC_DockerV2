@@ -1,13 +1,16 @@
 import {
+  LoggedUserType,
   LoginType,
   MutationLoginType,
   MutationRegisterType,
   QueryUserType,
   RegisterType,
   TokenType,
+  UpdatedUserType,
+  UpdateUserResponse,
 } from "@/features/auth/models";
 import { api } from "./api";
-import {  setToken, setUser } from "@/features/auth/slice";
+import { setToken, setUser } from "@/features/auth/slice";
 
 const extendedApi = api
   .enhanceEndpoints({
@@ -55,15 +58,28 @@ const extendedApi = api
         async onQueryStarted(args, { dispatch, queryFulfilled }) {
           try {
             const { data } = await queryFulfilled;
-            console.log(data);
             dispatch(setUser(data.user));
           } catch (error) {}
         },
+      }),
+      updateUser: build.mutation<UpdateUserResponse, UpdatedUserType>({
+        query: (body: UpdatedUserType) => {
+          return {
+            url: `update-user/${body.id}`,
+            method: "PUT",
+            body,
+          };
+        },
+        invalidatesTags: ["Logged"],
       }),
     }),
     overrideExisting: true,
   });
 // export const selectLogged = api.endpoints.getUser;
 
-export const { useLoginMutation, useGetUserQuery, useRegisterMutation } =
-  extendedApi;
+export const {
+  useLoginMutation,
+  useGetUserQuery,
+  useRegisterMutation,
+  useUpdateUserMutation,
+} = extendedApi;

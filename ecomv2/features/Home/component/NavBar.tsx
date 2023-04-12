@@ -7,13 +7,13 @@ import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { open } from "@/features/common/slice";
 import { useSelector } from "react-redux";
-import { logout, selectIsLogged } from "@/features/auth/slice";
+import { logout, selectIsLogged, selectUserId } from "@/features/auth/slice";
 import useUtilityModal from "@/features/common/hooks/useUtilityModal";
 type Props = {
   itemNumber: number;
 };
 export default function NavBar({ itemNumber }: Props) {
-  const { displayNotification } = useUtilityModal();
+  const id = useSelector(selectUserId);
   const [openNav, setOpenNav] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ export default function NavBar({ itemNumber }: Props) {
   };
   const handleLogout = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    router.push("/auth/profil");
+    router.push(`/auth/profil?id=${id}`);
   };
   return (
     <header className="header_container">

@@ -1,13 +1,12 @@
 import { useLoginMutation, useRegisterMutation } from "@/appli/services/auth";
+import { hasNonEmptyProperty } from "@/constants/function";
 import {
-  emailPattern,
-  passwordPattern,
   validateEmail,
   validatePassword,
   validateRequiredField,
 } from "@/constants/patterns";
 import Dialog from "@/features/common/components/Dialog";
-import { close, selectNotification } from "@/features/common/slice";
+import { close } from "@/features/common/slice";
 import React, { useState } from "react";
 import { BiShowAlt } from "react-icons/bi";
 import { BiHide } from "react-icons/bi";
@@ -64,7 +63,9 @@ export default function AccessDialog({ func }: Props) {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (Object.keys(formData.errors).length > 0) {
+    const hasErrors = hasNonEmptyProperty(formData.errors, (value) => !value);
+
+    if (hasErrors) {
       displayNotification({
         message: "Veuillez corriger les erreurs dans le formulaire",
         type: "error",
@@ -84,6 +85,12 @@ export default function AccessDialog({ func }: Props) {
               type: "success",
             });
             dispatch(close());
+          })
+          .catch((err) => {
+            displayNotification({
+              message: err.data.message,
+              type: "error",
+            });
           });
       } else {
         await register({

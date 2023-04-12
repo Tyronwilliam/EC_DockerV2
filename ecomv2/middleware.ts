@@ -10,9 +10,10 @@ export async function middleware(request: NextRequest) {
   }
   if (
     request.nextUrl.pathname === "/auth/profil/command" ||
-    request.nextUrl.pathname === "/auth/profil/infos"
+    request.nextUrl.pathname === "/auth/profil/infos" ||
+    request.nextUrl.pathname === "/auth/profil/my-account"
   ) {
-    const newUrl = `http://${request.headers.get("host")}/auth/profil`;
+    const newUrl = `http://${request.headers.get("host")}/auth/profil?id=`;
     return NextResponse.rewrite(newUrl);
   }
 }

@@ -1,4 +1,4 @@
-import { Page } from "@/features/Home";
+import { Page } from "@/features/common";
 import React from "react";
 
 function Brand() {

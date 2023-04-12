@@ -1,9 +1,9 @@
 import { CarouselBrand } from "@/features/Carousel";
+import { Page } from "@/features/common";
 import {
   FindUs,
   Intro,
   Newsletter,
-  Page,
   Preview,
   Reinsurance,
 } from "@/features/Home";
@@ -16,9 +16,7 @@ import { SiVectorlogozone } from "react-icons/si";
 import { SiNetflix } from "react-icons/si";
 import { SiHulu } from "react-icons/si";
 
-
 export default function Home() {
-
   const content = [
     <SiAdidas className="emoji_carousel" />,
     <SiNike className="emoji_carousel" />,

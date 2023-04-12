@@ -1,24 +1,21 @@
 import { useGetUserQuery } from "@/appli/services/auth";
-import { Page } from "@/features/Home";
 import ProfilView from "@/features/auth/components/ProfilView";
-import Box from "@/features/common/components/Box";
 import React, { useEffect } from "react";
+import { GetServerSidePropsContext } from "next";
+import { Page } from "@/features/common";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { selectUserId } from "@/features/auth/slice";
 
-function profil() {
-  const { data, isLoading, isError } = useGetUserQuery(22);
-
-  useEffect(() => {
-    if (isLoading !== true) {
-      console.log(data);
-    }
-  }, []);
+function Profil() {
+  const myId = useSelector(selectUserId);
+  const { data, isLoading, isError } = useGetUserQuery(myId);
 
   return (
     <Page>
-      <ProfilView />
+      <ProfilView user={data?.user} />
     </Page>
   );
 }
 
-export default profil;
+export default Profil;
