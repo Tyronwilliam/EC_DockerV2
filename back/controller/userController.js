@@ -7,8 +7,11 @@ const {
   checkToken,
   updatePassword,
   findUserById,
+  updateImg,
 } = require("../models/userModel");
 const { sendEmail } = require("../mailling/sendinblue");
+const path = require("path");
+
 const bcrypt = require("bcryptjs");
 const code = require("../HttpResponse/httpResponse");
 const jwt = require("jsonwebtoken");
@@ -61,15 +64,6 @@ const login = async (req, res) => {
     if (isMatch) {
       const user = {
         id: result[0].id,
-        // name: result[0].name,
-        // lastname: result[0].lastname,
-        // email: result[0].email,
-        // img: result[0].img,
-        // phone: result[0].phone,
-        // address: result[0].address,
-        // zip: result[0].zip,
-        // city: result[0].city,
-        // country: result[0].country,
       };
       const token = createToken(result[0].id);
       if (result[0].confirmed !== 1) {
@@ -102,10 +96,11 @@ const confirmAccount = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { id } = await req.params;
-  const { name, lastname, address, phone, zip, city, country, cgv, img } =
+  const { name, lastname, address, phone, zip, city, country, cgv } =
     await req.body;
+
   try {
-    await updateUserById(
+    const result = await updateUserById(
       id,
       name,
       lastname,
@@ -114,9 +109,9 @@ const updateUser = async (req, res) => {
       zip,
       city,
       country,
-      cgv,
-      img
+      cgv
     );
+    console.log(result);
     res.json({
       message: code.HTTPCode.user.SUCCESS.update.SUCCESS,
       status: 201,
@@ -126,7 +121,31 @@ const updateUser = async (req, res) => {
     res.status(500).json({ message: code.HTTPCode.user.SUCCESS.update.ERROR });
   }
 };
+const updateUserImg = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const Myimage = req.file;
+    console.log(Myimage);
+    const url = "http://" + req.headers.host;
+    const image = Myimage.path.replace(/^\/+/, "").replace(/\\/g, "/");
+    const imageUrl = `${url}/uploads/${Myimage.filename}`;
+    const response = await updateImg(Myimage.filename, id);
+    console.log(response, "HELLOO LA REPONS E");
 
+    res.set("Content-Type", Myimage.mimetype);
+    res.sendFile(path.resolve(__dirname, "../uploads", Myimage.filename));
+    res.json({
+      message: "User updated successfully",
+      status: 201,
+      url: imageUrl,
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while updating the user." });
+  }
+};
 const resetPassword = async (req, res) => {
   const { email } = await req.body;
   try {
@@ -141,8 +160,7 @@ const resetPassword = async (req, res) => {
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
 
-    const result = await generateToken(email, token);
-    console.log(result);
+    await generateToken(email, token);
 
     const resetLink = `http://localhost:3000/reset-password/${token}`;
 
@@ -188,14 +206,13 @@ const getUserFromId = async (req, res) => {
         name: result[0].name,
         lastname: result[0].lastname,
         email: result[0].email,
-        img: result[0].img,
+        image: result[0].image,
         phone: result[0].phone,
         address: result[0].address,
         zip: result[0].zip,
         city: result[0].city,
         country: result[0].country,
       };
-      console.log(result);
       res.status(201).json({ message: "User found", user: user });
     }
   } catch (error) {
@@ -210,4 +227,5 @@ module.exports = {
   resetPassword,
   confirmResetPassword,
   getUserFromId,
+  updateUserImg,
 };

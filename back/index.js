@@ -3,6 +3,9 @@ const app = express();
 const { pool } = require("./utils");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const path = require("path");
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -25,7 +28,7 @@ const avisRoute = require("./routes/avisRoutes");
 const productRoute = require("./routes/productRoutes");
 const basketRoute = require("./routes/basketRoutes");
 
-//Use route
+//Use route// Serve the "uploads" directory at "/uploads" URL path
 app.use("/api", userRoute);
 app.use("/api", avisRoute);
 app.use("/api", productRoute);

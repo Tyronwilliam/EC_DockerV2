@@ -8,10 +8,22 @@ const {
   resetPassword,
   confirmResetPassword,
   getUserFromId,
+  updateUserImg,
 } = require("../controller/userController");
 const requireAuth = require("../middleware/requireAuth");
+const multer = require("multer");
+const path = require("path");
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.resolve(__dirname, "../uploads"));
+  },
+});
+const upload = multer({ storage });
+
+router.put("/update/mypicture/:id", upload.single("image"), updateUserImg);
 router.put("/update-user/:id", requireAuth, updateUser);
+
 // NON PROTECTED
 router.post("/register", registerUser);
 router.post("/login", login);

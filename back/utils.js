@@ -1,4 +1,5 @@
 const mysql = require("mysql");
+const multer = require("multer");
 
 const pool = mysql.createPool({
   connectionLimit: 10,

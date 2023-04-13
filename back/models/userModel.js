@@ -63,23 +63,11 @@ async function updateUserById(
   zip,
   city,
   country,
-  cgv,
-  img
+  cgv
 ) {
   const sql =
-    "UPDATE user SET name=? , lastname=? , address=? , phone=? , zip=? , city=? , country=? , cgv=?   ,img=? WHERE id = ?";
-  const values = [
-    name,
-    lastname,
-    address,
-    phone,
-    zip,
-    city,
-    country,
-    cgv,
-    img,
-    id,
-  ];
+    "UPDATE user SET name=? , lastname=? , address=? , phone=? , zip=? , city=? , country=? , cgv=? WHERE id = ?";
+  const values = [name, lastname, address, phone, zip, city, country, cgv, id];
   try {
     const result = await query(sql, values);
     return result;
@@ -92,6 +80,18 @@ async function updateUserById(
 async function generateToken(email, reset_password_token) {
   const sql = "UPDATE user SET reset_password_token=? WHERE email =?";
   const values = [reset_password_token, email];
+
+  try {
+    const result = await query(sql, values);
+    return result;
+  } catch (error) {
+    console.error("Error get user:", error);
+    throw error;
+  }
+}
+async function updateImg(image, id) {
+  const sql = "UPDATE user SET image=? WHERE id =?";
+  const values = [image, id];
 
   try {
     const result = await query(sql, values);
@@ -137,4 +137,5 @@ module.exports = {
   generateToken,
   checkToken,
   updatePassword,
+  updateImg,
 };
