@@ -72,6 +72,21 @@ const extendedApi = api
         },
         invalidatesTags: ["Logged"],
       }),
+      updateUserImage: build.mutation<
+        any,
+        { id: number | undefined; img: any }
+      >({
+        query: ({ id: id, img: img }) => {
+          const formData = new FormData();
+          formData.append("image", img);
+          return {
+            url: `update/mypicture/${id}`,
+            method: "PUT",
+            body: formData,
+          };
+        },
+        invalidatesTags: ["Logged"],
+      }),
     }),
     overrideExisting: true,
   });
@@ -82,4 +97,5 @@ export const {
   useGetUserQuery,
   useRegisterMutation,
   useUpdateUserMutation,
+  useUpdateUserImageMutation,
 } = extendedApi;

@@ -1,6 +1,6 @@
 import Box from "@/features/common/components/Box";
 import Link from "next/link";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import CommandPage from "./CommandPage";
 import InfosPage from "./InfosPage";
 import Image from "next/image";
@@ -11,11 +11,27 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { MdOutlineAddAPhoto } from "react-icons/md";
 import { MdOutlineDiscount } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
-import { QueryUserType } from "../models";
+import { QueryUserType, UpdatedUserType } from "../models";
 import MyAccount from "./MyAccount";
 import { capitalizeFirstLetter } from "@/constants/function";
+import {
+  useUpdateUserImageMutation,
+  useUpdateUserMutation,
+} from "@/appli/services/auth";
+import useUtilityModal from "@/features/common/hooks/useUtilityModal";
+import axios from "axios";
+
+interface IFileUpload {
+  setUploadedImage: React.Dispatch<React.SetStateAction<string>>;
+}
 function ProfilView({ user }: { user?: QueryUserType["user"] }) {
+  const { displayNotification } = useUtilityModal();
   const [showCommandPage, setShowCommandPage] = useState("command");
+  const [imageUrl, setImageUrl] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [update] = useUpdateUserImageMutation();
+  const [file, setFile] = useState<File | null>(null);
+  const [formData, setFormData] = useState<FormData | undefined>();
 
   const handleUrlChange = () => {
     if (
@@ -60,6 +76,33 @@ function ProfilView({ user }: { user?: QueryUserType["user"] }) {
       window.removeEventListener("popstate", handleUrlChange);
     };
   }, []);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (selectedFile) {
+      const data = {
+        id: user?.id,
+        img: selectedFile,
+      };
+      console.log(data);
+      try {
+        update(data)
+          .unwrap()
+          .then((res) => console.log(res.url, "hello"))
+          .catch((err) => console.log(err, "error"));
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
   return (
     <div className="container_profil">
       <Box myStyle="box_profil">
@@ -69,8 +112,22 @@ function ProfilView({ user }: { user?: QueryUserType["user"] }) {
               <div className="hover_profile_change">
                 <MdOutlineAddAPhoto className="emoji_picture" />
               </div>
+              <form
+                onSubmit={(e) => handleSubmit(e)}
+                className="newPP"
+                encType="multipart/form-data"
+              >
+                <input
+                  className="newPP"
+                  id="image"
+                  type="file"
+                  onChange={handleFileChange}
+                  name="image"
+                />
+                <button>SUBMIT</button>
+              </form>
               <Image
-                src={Fake}
+                src={`http://localhost:5000/uploads/${user?.image}`}
                 alt="proflie picture"
                 fill
                 className="img_profile"

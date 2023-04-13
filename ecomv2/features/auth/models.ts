@@ -3,7 +3,7 @@ export interface LoggedUserType {
   email: string;
   name: string;
   lastname: string;
-  img?: string | undefined;
+  image?: any | undefined;
   phone?: number | undefined;
   address?: string | undefined;
   zip?: number | undefined;
@@ -17,7 +17,7 @@ export interface UpdatedUserType {
   name?: string;
   lastname?: string;
   email?: string;
-  img?: string;
+  image?: any;
   phone?: number;
   address?: string;
   zip?: number;
@@ -51,7 +51,7 @@ export interface QueryUserType {
     name: string;
     lastname: string;
     email: string;
-    img?: string;
+    image?: any;
     phone?: number;
     address?: string;
     zip?: number;

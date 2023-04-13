@@ -16,6 +16,9 @@ const nextConfig = {
     fiber: false,
     includePaths: [path.join(__dirname, "styles")],
   },
+  images: {
+    domains: ["localhost", "http://localhost:5000"],
+  },
 };
 
 module.exports = nextConfig;

@@ -10,7 +10,7 @@ import { selectUserId } from "@/features/auth/slice";
 function Profil() {
   const myId = useSelector(selectUserId);
   const { data, isLoading, isError } = useGetUserQuery(myId);
-
+  console.log(data);
   return (
     <Page>
       <ProfilView user={data?.user} />
